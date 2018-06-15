@@ -7,6 +7,7 @@ package com.anwesh.uiprojects.linkedsidearcview
 import android.app.Activity
 import android.view.View
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.view.MotionEvent
 import android.graphics.*
 
@@ -99,9 +100,10 @@ class LinkedSideArcView (ctx : Context) : View(ctx) {
         }
 
         fun draw(canvas : Canvas, paint : Paint) {
+            prev?.draw(canvas, paint)
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
-            val gap : Float = w / SIDE_ARC_NODES
+            val gap : Float = (0.8f * w) / SIDE_ARC_NODES
             paint.style = Paint.Style.STROKE
             paint.strokeWidth = Math.min(w, h)/60
             paint.strokeCap = Paint.Cap.ROUND
@@ -182,9 +184,10 @@ class LinkedSideArcView (ctx : Context) : View(ctx) {
 
     companion object {
         fun create(activity : Activity) : LinkedSideArcView {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             val view : LinkedSideArcView = LinkedSideArcView(activity)
             activity.setContentView(view)
-            return view 
+            return view
         }
     }
 }
