@@ -153,4 +153,27 @@ class LinkedSideArcView (ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedSideArcView) {
+
+        private val animator : Animator = Animator(view)
+
+        private val linkedSideArc : LinkedSideArc = LinkedSideArc(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#FF7043"))
+            linkedSideArc.draw(canvas, paint)
+            animator.animate {
+                linkedSideArc.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            linkedSideArc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
