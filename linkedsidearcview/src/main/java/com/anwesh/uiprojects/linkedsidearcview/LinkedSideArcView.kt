@@ -9,6 +9,8 @@ import android.content.Context
 import android.view.MotionEvent
 import android.graphics.*
 
+val SIDE_ARC_NODES = 5
+
 class LinkedSideArcView (ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -71,6 +73,60 @@ class LinkedSideArcView (ctx : Context) : View(ctx) {
 
                 }
             }
+        }
+    }
+
+    data class SideArcNode(var i : Int) {
+
+        private val state : State = State()
+
+        private var prev : SideArcNode? = null
+
+        private var next : SideArcNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < SIDE_ARC_NODES - 1) {
+                next = SideArcNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = w / SIDE_ARC_NODES
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = Math.min(w, h)/60
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.color = Color.parseColor("#9b59b6")
+            canvas.save()
+            canvas.translate(i * gap + gap * state.scale, h/2)
+            canvas.drawArc(RectF(-gap/2, -gap/2, gap/2, gap/2), -60f, 120f, false, paint)
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : SideArcNode {
+            var curr : SideArcNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
