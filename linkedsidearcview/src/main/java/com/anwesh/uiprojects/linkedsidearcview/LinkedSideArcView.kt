@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedsidearcview
  * Created by anweshmishra on 15/06/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.content.Context
 import android.view.MotionEvent
@@ -176,6 +177,14 @@ class LinkedSideArcView (ctx : Context) : View(ctx) {
             linkedSideArc.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedSideArcView {
+            val view : LinkedSideArcView = LinkedSideArcView(activity)
+            activity.setContentView(view)
+            return view 
         }
     }
 }
